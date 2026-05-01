@@ -16,5 +16,5 @@ const glow = ms <= 0 ? "0 0 8px rgba(248,81,73,0.7)" : isUrgent ? "0 0 8px rgba(
 ---
 <div class="inline-flex items-center gap-2 eyebrow" title={`expires at ${expiresAt}`}>
   <span class={`size-1.5 rounded-full inline-block ${colorClass}`} style={`box-shadow: ${glow}`}></span>
-  <span>{ms <= 0 ? "expired" : `expires in ${human}`}</span>
+  <span>{ms <= 0 ? "expired" : "expires in " + human}</span>
 </div>
