@@ -105,23 +105,43 @@ import { EXPIRY_OPTIONS } from "@gitdiffer/shared";
   diff.addEventListener("input", updateGutter);
   updateGutter();
 
-  ["dragover", "dragenter"].forEach((evt) =>
-    dropzone.addEventListener(evt, (e) => {
-      e.preventDefault();
-      dropzone.classList.add("border-blue");
-    }),
+  // Prevent default browser file drop behavior
+  ["dragover", "drop"].forEach((evt) =>
+    document.addEventListener(evt, (e) => e.preventDefault())
   );
-  ["dragleave", "drop"].forEach((evt) =>
-    dropzone.addEventListener(evt, () => {
-      dropzone.classList.remove("border-blue");
-    }),
-  );
-  dropzone.addEventListener("drop", async (e) => {
+
+  let dragCounter = 0;
+  const handleDragEnter = (e: Event) => {
     e.preventDefault();
+    dragCounter++;
+    dropzone.classList.add("border-blue");
+  };
+  const handleDragLeave = (e: Event) => {
+    e.preventDefault();
+    dragCounter--;
+    if (dragCounter === 0) {
+      dropzone.classList.remove("border-blue");
+    }
+  };
+  const handleDragOver = (e: Event) => {
+    e.preventDefault();
+  };
+  const handleDrop = async (e: Event) => {
+    e.preventDefault();
+    dragCounter = 0;
+    dropzone.classList.remove("border-blue");
     const file = (e as DragEvent).dataTransfer?.files?.[0];
     if (!file) return;
     diff.value = await file.text();
     updateGutter();
+  };
+
+  // Attach to both dropzone and textarea
+  [dropzone, diff].forEach((element) => {
+    element.addEventListener("dragenter", handleDragEnter);
+    element.addEventListener("dragleave", handleDragLeave);
+    element.addEventListener("dragover", handleDragOver);
+    element.addEventListener("drop", handleDrop);
   });
 
   form.addEventListener("submit", async (e) => {
