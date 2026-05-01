@@ -1,0 +1,21 @@
+[build]
+  base = "apps/web"
+  command = "npm run build"
+  publish = "dist"
+
+[dev]
+  command = "npx astro dev --root apps/web"
+  framework = "#custom"
+  targetPort = 4321
+  port = 8888
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[edge_functions]]
+  path = "/api/patches"
+  function = "rate-limit"
+
+[functions."cleanup-expired"]
+  schedule = "@daily"

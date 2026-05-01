@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test *)",
+      "Bash(NPM_CONFIG_CACHE=/Users/harsh/dev/gitdiffer/.npm-cache npm test)",
+      "Bash(NPM_CONFIG_CACHE=/Users/harsh/dev/gitdiffer/.npm-cache npm --workspace @gitdiffer/web run build)",
+      "Bash(NPM_CONFIG_CACHE=/Users/harsh/dev/gitdiffer/.npm-cache npm --workspace gitdiffer run build)",
+      "Bash(node /Users/harsh/dev/gitdiffer/packages/cli/bin/gitdiffer.js)",
+      "Bash(NPM_CONFIG_CACHE=/Users/harsh/dev/gitdiffer/.npm-cache npm --workspace @gitdiffer/shared run build)",
+      "Bash(curl -s -o /dev/null -w \"Home: %{http_code}\\\\n\" http://localhost:8888/)",
+      "Bash(curl -s -o /dev/null -w \"API root \\(no method\\): %{http_code}\\\\n\" http://localhost:8888/api/patches)",
+      "Bash(curl -sv http://localhost:8888/)",
+      "Bash(curl *)",
+      "Bash(npm run *)",
+      "Bash(echo \"started, pid=$!\")",
+      "Bash(pkill -f \"netlify dev\")",
+      "Bash(pkill -f \"astro dev\")",
+      "Bash(grep -oE '<style[^>]*>[^<]{0,200}' /tmp/home.html)",
+      "Bash(grep -oE '<style[^>]*data-vite-dev-id[^>]*>.{0,100}' /tmp/home.html)"
+    ]
+  }
+}

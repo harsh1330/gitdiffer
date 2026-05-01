@@ -1,0 +1,19 @@
+{
+  "name": "gitdiffer",
+  "version": "0.0.1",
+  "description": "Share a git diff via a one-time URL.",
+  "type": "module",
+  "bin": { "gitdiffer": "bin/gitdiffer.js" },
+  "files": ["bin", "dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@gitdiffer/shared": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "vitest": "^1.5.0"
+  }
+}

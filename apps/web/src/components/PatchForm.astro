@@ -1,0 +1,156 @@
+---
+import { EXPIRY_OPTIONS } from "@gitdiffer/shared";
+---
+<form id="patch-form" class="space-y-5">
+  <!-- Drop / paste hint strip -->
+  <label
+    id="dropzone"
+    for="diff"
+    class="block cursor-text border border-dashed border-border2 hover:border-blue/60 transition-colors px-5 py-3 rounded-lg bg-panel/50">
+    <div class="flex items-center justify-between gap-4">
+      <span class="eyebrow flex items-center gap-2">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+        drop · paste · or pipe
+      </span>
+      <span class="text-[11px] text-muted2 font-mono">.patch · .diff · .txt</span>
+    </div>
+  </label>
+
+  <!-- Textarea with line-number gutter -->
+  <div class="glow-wrap field rounded-lg overflow-hidden">
+    <div class="relative">
+      <div class="absolute inset-y-0 left-0 w-12 border-r border-border2 bg-bg2/60 pointer-events-none flex flex-col items-end pr-2 pt-3 text-[11px] text-muted2/70 font-mono select-none" id="gutter"></div>
+      <textarea
+        id="diff"
+        name="diff"
+        rows="14"
+        spellcheck="false"
+        placeholder="diff --git a/file.txt b/file.txt&#10;index a1b2c3..d4e5f6 100644&#10;--- a/file.txt&#10;+++ b/file.txt&#10;@@ -1,3 +1,4 @@..."
+        class="w-full bg-transparent pl-14 pr-4 py-3 font-mono text-[13px] leading-[1.65] focus:outline-none placeholder:text-muted2 resize-y min-h-[300px] text-ink"
+        required></textarea>
+    </div>
+  </div>
+
+  <!-- Controls strip -->
+  <div class="flex flex-wrap items-center gap-x-6 gap-y-3 pt-1">
+    <div class="flex items-center gap-3">
+      <label for="expires_in" class="eyebrow">expiry</label>
+      <select
+        id="expires_in"
+        name="expires_in"
+        class="field rounded-md px-3 py-2 text-[12.5px] font-mono pr-8 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22><path d=%22M0 0l5 6 5-6z%22 fill=%22%238b949e%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] cursor-pointer">
+        {EXPIRY_OPTIONS.map((opt) => (
+          <option value={opt} selected={opt === "7d"} class="bg-bg2">{opt}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="hidden md:flex items-center gap-2 eyebrow">
+      <span class="size-1.5 rounded-full bg-green inline-block shadow-[0_0_8px_rgba(63,185,80,0.7)]"></span>
+      <span>private · unguessable url</span>
+    </div>
+
+    <div class="ml-auto flex items-center gap-3">
+      <span id="size-readout" class="eyebrow text-muted hidden md:inline-block">0 b</span>
+      <button
+        type="submit"
+        id="submit-btn"
+        class="btn-primary rounded-md px-6 py-3 text-[12px] inline-flex items-center gap-3 uppercase">
+        <span id="submit-label">dispatch</span>
+        <svg id="submit-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <p id="error" class="text-red text-[13px] hidden mt-2 border-l-2 border-red pl-3 font-mono"></p>
+</form>
+
+<script>
+  const form = document.getElementById("patch-form") as HTMLFormElement;
+  const diff = document.getElementById("diff") as HTMLTextAreaElement;
+  const expires = document.getElementById("expires_in") as HTMLSelectElement;
+  const errorEl = document.getElementById("error") as HTMLParagraphElement;
+  const dropzone = document.getElementById("dropzone") as HTMLLabelElement;
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+  const submitLabel = document.getElementById("submit-label") as HTMLSpanElement;
+  const submitArrow = document.getElementById("submit-arrow") as SVGElement;
+  const sizeReadout = document.getElementById("size-readout") as HTMLSpanElement;
+  const gutter = document.getElementById("gutter") as HTMLDivElement;
+
+  function showError(msg: string) {
+    errorEl.textContent = msg;
+    errorEl.classList.remove("hidden");
+  }
+  function clearError() {
+    errorEl.textContent = "";
+    errorEl.classList.add("hidden");
+  }
+  function fmtBytes(n: number): string {
+    if (n < 1024) return `${n} b`;
+    if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} kb`;
+    return `${(n / (1024 * 1024)).toFixed(2)} mb`;
+  }
+  function updateGutter() {
+    const lines = Math.max(14, diff.value.split("\n").length);
+    const cap = Math.min(lines, 200);
+    while (gutter.firstChild) gutter.removeChild(gutter.firstChild);
+    for (let i = 1; i <= cap; i++) {
+      const span = document.createElement("span");
+      span.textContent = String(i).padStart(2, "0");
+      gutter.appendChild(span);
+    }
+    sizeReadout.textContent = fmtBytes(new Blob([diff.value]).size);
+  }
+
+  diff.addEventListener("input", updateGutter);
+  updateGutter();
+
+  ["dragover", "dragenter"].forEach((evt) =>
+    dropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      dropzone.classList.add("border-blue");
+    }),
+  );
+  ["dragleave", "drop"].forEach((evt) =>
+    dropzone.addEventListener(evt, () => {
+      dropzone.classList.remove("border-blue");
+    }),
+  );
+  dropzone.addEventListener("drop", async (e) => {
+    e.preventDefault();
+    const file = (e as DragEvent).dataTransfer?.files?.[0];
+    if (!file) return;
+    diff.value = await file.text();
+    updateGutter();
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearError();
+    submitBtn.disabled = true;
+    submitLabel.textContent = "dispatching…";
+    submitArrow.style.opacity = "0.4";
+    try {
+      const res = await fetch("/api/patches", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ diff: diff.value, expires_in: expires.value }),
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({ message: "Something went wrong." }))) as { message?: string };
+        showError(body.message ?? "Something went wrong.");
+        submitBtn.disabled = false;
+        submitLabel.textContent = "dispatch";
+        submitArrow.style.opacity = "1";
+        return;
+      }
+      const body = (await res.json()) as { id: string };
+      location.assign(`/p/${body.id}`);
+    } catch {
+      showError("Network error — could not reach the server.");
+      submitBtn.disabled = false;
+      submitLabel.textContent = "dispatch";
+      submitArrow.style.opacity = "1";
+    }
+  });
+</script>

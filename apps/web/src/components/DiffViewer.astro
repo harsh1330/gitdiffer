@@ -1,0 +1,38 @@
+---
+const { diff } = Astro.props as { diff: string };
+---
+<div class="card overflow-hidden">
+  <div id="diff-host" data-diff={diff}>
+    <noscript>
+      <pre class="font-mono text-[12.5px] whitespace-pre overflow-x-auto p-4 bg-bg2 text-ink">{diff}</pre>
+    </noscript>
+    <pre id="diff-fallback" class="font-mono text-[12.5px] whitespace-pre overflow-x-auto p-4 bg-bg2 text-ink">{diff}</pre>
+    <div id="diff-rendered" class="hidden"></div>
+    <p id="diff-warning" class="text-[12px] text-amber px-4 py-2 border-t border-border2 hidden">
+      ! could not render structured diff — showing raw text.
+    </p>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/css/diff2html.min.css" />
+<script type="module">
+  import { Diff2HtmlUI } from "https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/js/diff2html-ui-base.min.js";
+  const host = document.getElementById("diff-host");
+  const target = document.getElementById("diff-rendered");
+  const fallback = document.getElementById("diff-fallback");
+  const warn = document.getElementById("diff-warning");
+  const diff = host?.dataset.diff ?? "";
+  try {
+    const ui = new Diff2HtmlUI(target, diff, {
+      drawFileList: true,
+      outputFormat: "side-by-side",
+      colorScheme: "dark",
+      matching: "lines",
+    });
+    ui.draw();
+    fallback?.classList.add("hidden");
+    target?.classList.remove("hidden");
+  } catch (e) {
+    warn?.classList.remove("hidden");
+  }
+</script>

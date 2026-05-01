@@ -1,0 +1,129 @@
+---
+import Base from "../../layouts/Base.astro";
+import ApplyCommandsPanel from "../../components/ApplyCommandsPanel.astro";
+import DiffViewer from "../../components/DiffViewer.astro";
+import ExpiryBadge from "../../components/ExpiryBadge.astro";
+import { getPatch } from "../../lib/store";
+import { isExpired } from "@gitdiffer/shared";
+
+export const prerender = false;
+
+const { id } = Astro.params;
+if (!id) return Astro.redirect("/", 302);
+
+const record = await getPatch(id);
+const status: "ok" | "missing" | "expired" = !record
+  ? "missing"
+  : isExpired(record.expires_at)
+    ? "expired"
+    : "ok";
+
+if (status === "missing") Astro.response.status = 404;
+else if (status === "expired") Astro.response.status = 410;
+
+const origin = new URL(Astro.request.url).origin;
+
+const sizeKb = record ? (record.size_bytes / 1024).toFixed(1) : "0";
+const created = record ? new Date(record.created_at).toUTCString().replace("GMT", "UTC") : "";
+const fileCount = record ? (record.diff.match(/^diff --git /gm) ?? []).length : 0;
+const adds = record ? (record.diff.match(/^\+(?!\+\+ )/gm) ?? []).length : 0;
+const dels = record ? (record.diff.match(/^-(?!-- )/gm) ?? []).length : 0;
+---
+<Base title={`gitdiffer · ${id}`}>
+
+  {status === "missing" && (
+    <div class="py-24 max-w-xl rise rise-1">
+      <span class="chip mb-6" style="border-color: rgba(248,81,73,0.3); background: rgba(248,81,73,0.08); color: var(--red);">
+        <span class="size-1.5 rounded-full bg-red" style="box-shadow: 0 0 8px rgba(248,81,73,0.7);"></span>
+        404 — not found
+      </span>
+      <h1 class="display text-[64px] md:text-[88px] tracking-tightest mb-4">
+        No <span class="display-italic text-gradient-blue">patch</span> here.
+      </h1>
+      <p class="text-muted text-[14px]">
+        The link may be wrong or the patch was deleted. Ask the sender to dispatch a fresh one.
+      </p>
+      <a href="/" class="btn-ghost rounded-md px-4 py-2 inline-flex items-center gap-2 mt-8">← compose new</a>
+    </div>
+  )}
+
+  {status === "expired" && (
+    <div class="py-24 max-w-xl rise rise-1">
+      <span class="chip mb-6" style="border-color: rgba(210,153,34,0.3); background: rgba(210,153,34,0.08); color: var(--amber);">
+        <span class="size-1.5 rounded-full bg-amber" style="box-shadow: 0 0 8px rgba(210,153,34,0.7);"></span>
+        410 — expired
+      </span>
+      <h1 class="display text-[64px] md:text-[88px] tracking-tightest mb-4">
+        This <span class="display-italic">patch</span> retired.
+      </h1>
+      <p class="text-muted text-[14px]">
+        Patches expire on a short timer for privacy. Ask the sender for a fresh dispatch.
+      </p>
+      <a href="/" class="btn-ghost rounded-md px-4 py-2 inline-flex items-center gap-2 mt-8">← compose new</a>
+    </div>
+  )}
+
+  {status === "ok" && record && (
+    <div>
+
+      <!-- Document head -->
+      <header class="grid grid-cols-12 gap-x-6 gap-y-6 mb-10 rise rise-1">
+        <div class="col-span-12 md:col-span-8">
+          <span class="chip mb-5">
+            <span class="dot-pulse bg-blue"></span>
+            dispatch
+          </span>
+          <h1 class="display text-[48px] md:text-[80px] tracking-tightest">
+            Patch <span class="display-italic text-gradient-blue">№{id.slice(0, 6)}</span>
+          </h1>
+          <p class="font-mono text-[12px] text-muted mt-3 break-all select-all">{id}</p>
+        </div>
+
+        <aside class="col-span-12 md:col-span-4 md:pl-6 md:border-l md:border-border2">
+          <dl class="grid grid-cols-2 gap-y-3 text-[12px]">
+            <dt class="eyebrow">status</dt>
+            <dd class="text-right"><ExpiryBadge expiresAt={record.expires_at} /></dd>
+
+            <dt class="eyebrow">size</dt>
+            <dd class="font-mono text-right text-ink">{sizeKb} kb</dd>
+
+            <dt class="eyebrow">files</dt>
+            <dd class="font-mono text-right text-ink">{fileCount}</dd>
+
+            <dt class="eyebrow">delta</dt>
+            <dd class="font-mono text-right">
+              <span class="text-green">+{adds}</span>
+              <span class="text-muted2 mx-1">·</span>
+              <span class="text-red">−{dels}</span>
+            </dd>
+
+            <dt class="eyebrow">created</dt>
+            <dd class="font-mono text-right text-[11px] text-muted">{created}</dd>
+          </dl>
+        </aside>
+      </header>
+
+      <div class="rule-bright mb-10"></div>
+
+      <!-- Apply commands -->
+      <section class="mb-12 rise rise-2">
+        <div class="flex items-end justify-between mb-4">
+          <p class="eyebrow"><span class="text-blue mr-2">§ a</span> apply</p>
+          <p class="eyebrow hidden md:block">pick a method · paste · done</p>
+        </div>
+        <ApplyCommandsPanel id={id} origin={origin} />
+      </section>
+
+      <!-- Diff viewer -->
+      <section class="rise rise-3">
+        <div class="flex items-end justify-between mb-4">
+          <p class="eyebrow"><span class="text-purple mr-2">§ b</span> review</p>
+          <p class="eyebrow hidden md:block">side-by-side · {fileCount} file{fileCount === 1 ? "" : "s"}</p>
+        </div>
+        <DiffViewer diff={record.diff} />
+      </section>
+
+    </div>
+  )}
+
+</Base>

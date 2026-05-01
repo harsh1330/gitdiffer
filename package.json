@@ -1,0 +1,16 @@
+{
+  "name": "gitdiffer",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": ["apps/*", "packages/*"],
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build:shared": "npm --workspace @gitdiffer/shared run build",
+    "build": "npm run build:shared && npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "dev": "npm --workspace apps/web run dev"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

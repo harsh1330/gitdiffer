@@ -1,0 +1,20 @@
+---
+const { expiresAt } = Astro.props as { expiresAt: string };
+const expiry = new Date(expiresAt);
+const now = new Date();
+const ms = expiry.getTime() - now.getTime();
+const hours = Math.floor(ms / (60 * 60 * 1000));
+const days = Math.floor(hours / 24);
+const human = ms <= 0
+  ? "expired"
+  : days >= 1
+    ? `${days}d`
+    : `${hours}h`;
+const isUrgent = ms > 0 && hours < 24;
+const colorClass = ms <= 0 ? "bg-red" : isUrgent ? "bg-amber" : "bg-green";
+const glow = ms <= 0 ? "0 0 8px rgba(248,81,73,0.7)" : isUrgent ? "0 0 8px rgba(210,153,34,0.7)" : "0 0 8px rgba(63,185,80,0.7)";
+---
+<div class="inline-flex items-center gap-2 eyebrow" title={`expires at ${expiresAt}`}>
+  <span class={`size-1.5 rounded-full inline-block ${colorClass}`} style={`box-shadow: ${glow}`}></span>
+  <span>{ms <= 0 ? "expired" : `expires in ${human}`}</span>
+</div>

@@ -1,0 +1,45 @@
+---
+import "../styles/global.css";
+const { title = "gitdiffer" } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content="Share a git diff with a teammate via URL — no branch push." />
+    <meta name="theme-color" content="#07090d" />
+  </head>
+  <body class="min-h-screen relative">
+    <div class="relative z-10">
+      <header class="sticky top-0 z-30 backdrop-blur-md bg-bg/70 border-b border-border2">
+        <div class="max-w-6xl mx-auto px-6 lg:px-10 h-14 flex items-center justify-between gap-6">
+          <a href="/" class="flex items-baseline gap-2 group">
+            <span class="size-2 rounded-full bg-blue group-hover:bg-purple transition-colors shadow-[0_0_12px_rgba(88,166,255,0.7)]"></span>
+            <span class="font-mono font-semibold tracking-tight">git<span class="text-blue group-hover:text-purple transition-colors">differ</span></span>
+            <span class="hidden sm:inline-block eyebrow ml-3">v0.1</span>
+          </a>
+          <nav class="flex items-center gap-1">
+            <a href="/" class="btn-ghost rounded-md px-3 py-1.5 hover:text-blue transition-colors">new</a>
+            <a href="https://github.com" class="btn-ghost rounded-md px-3 py-1.5 inline-flex items-center gap-2 hover:text-blue transition-colors">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.04c-3.2.7-3.88-1.37-3.88-1.37-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.69 1.24 3.34.95.1-.74.4-1.24.73-1.53-2.55-.29-5.24-1.27-5.24-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.16 1.17a10.97 10.97 0 0 1 5.76 0c2.2-1.48 3.16-1.17 3.16-1.17.62 1.59.23 2.76.11 3.05.74.8 1.18 1.82 1.18 3.07 0 4.4-2.69 5.36-5.25 5.65.41.36.78 1.05.78 2.12v3.14c0 .31.21.68.79.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+              github
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="max-w-6xl mx-auto px-6 lg:px-10 pt-12 md:pt-20 pb-24">
+        <slot />
+      </main>
+
+      <footer class="max-w-6xl mx-auto px-6 lg:px-10 py-10 mt-10 border-t border-border2">
+        <div class="flex items-center justify-between flex-wrap gap-4 text-muted">
+          <span class="eyebrow">— end of transmission —</span>
+          <span class="eyebrow">a small tool · runs on netlify</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
