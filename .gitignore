@@ -30,3 +30,5 @@ test-results/
 # turbo / next style caches (just in case)
 .turbo/
 .cache/
+
+.claude/
