@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
-import type { ExpiryOption } from "@gitdiffer/shared";
-import { EXPIRY_OPTIONS } from "@gitdiffer/shared";
+import type { ExpiryOption } from "../types.js";
+import { EXPIRY_OPTIONS } from "../types.js";
 import { runGitDiff } from "../util/git.js";
 import { createPatch } from "../api.js";
 

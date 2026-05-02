@@ -1,4 +1,4 @@
-import type { CreatePatchRequest, CreatePatchResponse } from "@gitdiffer/shared";
+import type { CreatePatchRequest, CreatePatchResponse } from "./types.js";
 
 const DEFAULT_HOST = "https://polite-tanuki-d0250a.netlify.app";
 
