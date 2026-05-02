@@ -1,6 +1,7 @@
 [build]
   command = "npm run build"
   publish = "apps/web/dist"
+  edge_functions = "apps/web/netlify/edge-functions"
 
 [dev]
   command = "npx astro dev --root apps/web"
@@ -9,7 +10,7 @@
   port = 8888
 
 [functions]
-  directory = "netlify/functions"
+  directory = "apps/web/netlify/functions"
   node_bundler = "esbuild"
 
 [[edge_functions]]
