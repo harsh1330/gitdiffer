@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "netlify dev",
+    "prebuild": "tsc -p ../../packages/shared/tsconfig.json",
     "build": "astro build",
     "preview": "astro preview",
     "test": "vitest run",
