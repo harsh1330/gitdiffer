@@ -4,7 +4,7 @@
   publish = "dist"
 
 [dev]
-  command = "npx astro dev"
+  command = "npx astro dev --root apps/web"
   framework = "#custom"
   targetPort = 4321
   port = 8888

@@ -14,7 +14,7 @@ const { title = "gitdiffer" } = Astro.props;
   <body class="min-h-screen relative">
     <div class="relative z-10">
       <header class="sticky top-0 z-30 backdrop-blur-md bg-bg/70 border-b border-border2">
-        <div class="max-w-6xl mx-auto px-6 lg:px-10 h-14 flex items-center justify-between gap-6">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 h-14 flex items-center justify-between gap-3 sm:gap-6">
           <a href="/" class="flex items-baseline gap-2 group">
             <span class="size-2 rounded-full bg-blue group-hover:bg-purple transition-colors shadow-[0_0_12px_rgba(88,166,255,0.7)]"></span>
             <span class="font-mono font-semibold tracking-tight">git<span class="text-blue group-hover:text-purple transition-colors">differ</span></span>
@@ -30,11 +30,11 @@ const { title = "gitdiffer" } = Astro.props;
         </div>
       </header>
 
-      <main class="max-w-6xl mx-auto px-6 lg:px-10 pt-12 md:pt-20 pb-24">
+      <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 pt-8 sm:pt-12 md:pt-20 pb-16 sm:pb-24">
         <slot />
       </main>
 
-      <footer class="max-w-6xl mx-auto px-6 lg:px-10 py-10 mt-10 border-t border-border2">
+      <footer class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-10 mt-8 sm:mt-10 border-t border-border2">
         <div class="flex items-center justify-between flex-wrap gap-4 text-muted">
           <span class="eyebrow">— end of transmission —</span>
           <span class="eyebrow">a small tool · runs on netlify</span>
