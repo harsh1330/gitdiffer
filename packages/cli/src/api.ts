@@ -1,6 +1,6 @@
 import type { CreatePatchRequest, CreatePatchResponse } from "@gitdiffer/shared";
 
-const DEFAULT_HOST = "https://gitdiffer.app";
+const DEFAULT_HOST = "https://polite-tanuki-d0250a.netlify.app";
 
 function host(): string {
   return process.env.GITDIFFER_HOST ?? DEFAULT_HOST;
