@@ -19,9 +19,6 @@ const status: "ok" | "missing" | "expired" = !record
     ? "expired"
     : "ok";
 
-if (status === "missing") Astro.response.status = 404;
-else if (status === "expired") Astro.response.status = 410;
-
 const origin = new URL(Astro.request.url).origin;
 
 const sizeKb = record ? (record.size_bytes / 1024).toFixed(1) : "0";
