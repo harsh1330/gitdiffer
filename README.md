@@ -92,7 +92,7 @@ gitdiffer/
 ## Local dev
 
 ```bash
-git clone https://github.com/<you>/gitdiffer
+git clone https://github.com/harsh1330/gitdiffer
 cd gitdiffer
 npm install
 npm run dev      # starts netlify dev (web on :8888, astro on :4321)

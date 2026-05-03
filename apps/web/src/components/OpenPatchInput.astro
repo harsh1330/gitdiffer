@@ -1,0 +1,79 @@
+---
+interface Props {
+  showDivider?: boolean;
+  ctaLabel?: string;
+}
+const { showDivider = true, ctaLabel = "open" } = Astro.props;
+---
+{showDivider && (
+  <div class="flex items-center gap-3 mb-5">
+    <div class="flex-1 h-px bg-border2"></div>
+    <span class="eyebrow text-muted2">— or open an existing patch —</span>
+    <div class="flex-1 h-px bg-border2"></div>
+  </div>
+)}
+<form id="open-patch-form" class="flex gap-2" novalidate>
+  <input
+    id="open-patch-input"
+    type="text"
+    autocomplete="off"
+    autocapitalize="off"
+    autocorrect="off"
+    spellcheck={false}
+    placeholder="paste patch ID or URL"
+    class="flex-1 min-w-0 bg-bg2 border border-border2 rounded-md px-3 py-2.5 font-mono text-[12px] sm:text-[13px] text-ink placeholder:text-muted2 focus:outline-none focus:border-blue focus:ring-1 focus:ring-blue/40 transition-colors"
+  />
+  <button type="submit" class="btn-primary rounded-md px-4 py-2.5 text-[11px] uppercase tracking-wider shrink-0">
+    {ctaLabel}
+  </button>
+</form>
+<p id="open-patch-error" class="hidden mt-2 text-[12px] text-red font-mono"></p>
+
+<script>
+  const ID_RE = /^[A-Za-z0-9_-]{18,30}$/;
+
+  function extractId(raw: string): string | null {
+    const trimmed = raw.trim();
+    if (!trimmed) return null;
+    const last = trimmed.split("/").filter(Boolean).pop() ?? "";
+    const id = last.split(/[?#]/)[0] ?? "";
+    return ID_RE.test(id) ? id : null;
+  }
+
+  const form = document.getElementById("open-patch-form") as HTMLFormElement | null;
+  const input = document.getElementById("open-patch-input") as HTMLInputElement | null;
+  const err = document.getElementById("open-patch-error") as HTMLParagraphElement | null;
+
+  function showError(msg: string) {
+    if (!err) return;
+    err.textContent = msg;
+    err.classList.remove("hidden");
+  }
+  function clearError() {
+    if (!err) return;
+    err.classList.add("hidden");
+    err.textContent = "";
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const id = extractId(input?.value ?? "");
+    if (!id) {
+      showError("That doesn't look like a valid patch ID or URL.");
+      return;
+    }
+    window.location.href = `/p/${id}`;
+  });
+
+  input?.addEventListener("input", clearError);
+
+  input?.addEventListener("paste", (e) => {
+    const pasted = e.clipboardData?.getData("text") ?? "";
+    const id = extractId(pasted);
+    if (id) {
+      e.preventDefault();
+      if (input) input.value = id;
+      window.location.href = `/p/${id}`;
+    }
+  });
+</script>
