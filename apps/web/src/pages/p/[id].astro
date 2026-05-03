@@ -3,6 +3,7 @@ import Base from "../../layouts/Base.astro";
 import ApplyCommandsPanel from "../../components/ApplyCommandsPanel.astro";
 import DiffViewer from "../../components/DiffViewer.astro";
 import ExpiryBadge from "../../components/ExpiryBadge.astro";
+import OpenPatchInput from "../../components/OpenPatchInput.astro";
 import { getPatch } from "../../lib/store";
 import { isExpired } from "@gitdiffer/shared";
 
@@ -32,35 +33,71 @@ const dels = record ? (record.diff.match(/^-(?!-- )/gm) ?? []).length : 0;
 <Base title={`gitdiffer · ${id}`}>
 
   {status === "missing" && (
-    <div class="py-24 max-w-xl rise rise-1">
-      <span class="chip mb-6" style="border-color: rgba(248,81,73,0.3); background: rgba(248,81,73,0.08); color: var(--red);">
-        <span class="size-1.5 rounded-full bg-red" style="box-shadow: 0 0 8px rgba(248,81,73,0.7);"></span>
-        404 — not found
-      </span>
-      <h1 class="display text-[64px] md:text-[88px] tracking-tightest mb-4">
-        No <span class="display-italic text-gradient-blue">patch</span> here.
-      </h1>
-      <p class="text-muted text-[14px]">
-        The link may be wrong or the patch was deleted. Ask the sender to dispatch a fresh one.
-      </p>
-      <a href="/" class="btn-ghost rounded-md px-4 py-2 inline-flex items-center gap-2 mt-8">← compose new</a>
-    </div>
+    <section class="relative py-12 sm:py-20 md:py-28 text-center overflow-hidden">
+      <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-0">
+        <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] aspect-square rounded-full opacity-25 blur-3xl"
+             style="background: radial-gradient(closest-side, rgba(248,81,73,0.30), transparent 70%);"></div>
+      </div>
+
+      <div class="relative z-10 max-w-2xl mx-auto rise rise-1">
+        <span class="chip mb-6" style="border-color: rgba(248,81,73,0.3); background: rgba(248,81,73,0.08); color: var(--red);">
+          <span class="size-1.5 rounded-full bg-red" style="box-shadow: 0 0 8px rgba(248,81,73,0.7);"></span>
+          404 — not found
+        </span>
+        <h1 class="display text-[44px] sm:text-[64px] md:text-[88px] tracking-tightest leading-[0.95] mb-4">
+          No <span class="display-italic text-gradient-blue">patch</span> here.
+        </h1>
+        <p class="text-muted text-[14px] sm:text-[15px] max-w-md mx-auto leading-relaxed">
+          The link may be wrong, the patch may have expired, or it was never minted.
+        </p>
+        <p class="font-mono text-[11px] text-muted2 mt-3 break-all select-all">{id}</p>
+
+        <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+          <a href="/" class="btn-primary rounded-md px-5 py-3 sm:px-7 sm:py-3.5 text-[11px] sm:text-[12px] inline-flex items-center gap-3 uppercase tracking-wider">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            compose new
+          </a>
+        </div>
+
+        <div class="max-w-md mx-auto mt-12 sm:mt-16 text-left rise rise-2">
+          <OpenPatchInput ctaLabel="try" />
+        </div>
+      </div>
+    </section>
   )}
 
   {status === "expired" && (
-    <div class="py-24 max-w-xl rise rise-1">
-      <span class="chip mb-6" style="border-color: rgba(210,153,34,0.3); background: rgba(210,153,34,0.08); color: var(--amber);">
-        <span class="size-1.5 rounded-full bg-amber" style="box-shadow: 0 0 8px rgba(210,153,34,0.7);"></span>
-        410 — expired
-      </span>
-      <h1 class="display text-[64px] md:text-[88px] tracking-tightest mb-4">
-        This <span class="display-italic">patch</span> retired.
-      </h1>
-      <p class="text-muted text-[14px]">
-        Patches expire on a short timer for privacy. Ask the sender for a fresh dispatch.
-      </p>
-      <a href="/" class="btn-ghost rounded-md px-4 py-2 inline-flex items-center gap-2 mt-8">← compose new</a>
-    </div>
+    <section class="relative py-12 sm:py-20 md:py-28 text-center overflow-hidden">
+      <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-0">
+        <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] aspect-square rounded-full opacity-25 blur-3xl"
+             style="background: radial-gradient(closest-side, rgba(210,153,34,0.30), transparent 70%);"></div>
+      </div>
+
+      <div class="relative z-10 max-w-2xl mx-auto rise rise-1">
+        <span class="chip mb-6" style="border-color: rgba(210,153,34,0.3); background: rgba(210,153,34,0.08); color: var(--amber);">
+          <span class="size-1.5 rounded-full bg-amber" style="box-shadow: 0 0 8px rgba(210,153,34,0.7);"></span>
+          410 — expired
+        </span>
+        <h1 class="display text-[44px] sm:text-[64px] md:text-[88px] tracking-tightest leading-[0.95] mb-4">
+          This <span class="display-italic">patch</span> retired.
+        </h1>
+        <p class="text-muted text-[14px] sm:text-[15px] max-w-md mx-auto leading-relaxed">
+          Patches self-destruct on a timer for privacy. Ask the sender to dispatch a fresh one.
+        </p>
+        <p class="font-mono text-[11px] text-muted2 mt-3 break-all select-all">{id}</p>
+
+        <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+          <a href="/" class="btn-primary rounded-md px-5 py-3 sm:px-7 sm:py-3.5 text-[11px] sm:text-[12px] inline-flex items-center gap-3 uppercase tracking-wider">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            compose new
+          </a>
+        </div>
+
+        <div class="max-w-md mx-auto mt-12 sm:mt-16 text-left rise rise-2">
+          <OpenPatchInput ctaLabel="try" />
+        </div>
+      </div>
+    </section>
   )}
 
   {status === "ok" && record && (

@@ -1,0 +1,45 @@
+---
+import Base from "../layouts/Base.astro";
+import OpenPatchInput from "../components/OpenPatchInput.astro";
+---
+<Base title="gitdiffer — page not found">
+
+  <section class="relative py-12 sm:py-20 md:py-28 text-center overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-0">
+      <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-[400px] sm:w-[700px] aspect-square rounded-full opacity-25 blur-3xl"
+           style="background: radial-gradient(closest-side, rgba(248,81,73,0.30), transparent 70%);"></div>
+      <div class="absolute top-32 -left-32 w-[260px] sm:w-[360px] aspect-square rounded-full opacity-30 blur-3xl"
+           style="background: radial-gradient(closest-side, rgba(188,140,255,0.25), transparent 70%);"></div>
+    </div>
+
+    <div class="relative z-10 max-w-2xl mx-auto rise rise-1">
+      <span class="chip mb-6" style="border-color: rgba(248,81,73,0.3); background: rgba(248,81,73,0.08); color: var(--red);">
+        <span class="size-1.5 rounded-full bg-red" style="box-shadow: 0 0 8px rgba(248,81,73,0.7);"></span>
+        404 — off the map
+      </span>
+
+      <h1 class="display text-[48px] sm:text-[64px] md:text-[100px] tracking-tightest leading-[0.95] mb-2">
+        Wrong <span class="display-italic text-gradient-blue">turn</span>.
+      </h1>
+      <h1 class="display text-[48px] sm:text-[64px] md:text-[100px] tracking-tightest leading-[0.95] -mt-1 md:-mt-3">
+        No <span class="display-italic">page</span> here.
+      </h1>
+
+      <p class="text-muted text-[14px] sm:text-[15px] max-w-md mx-auto mt-6 sm:mt-8 leading-relaxed">
+        This URL doesn't lead anywhere — could be a typo, an old link, or a patch that ran its course.
+      </p>
+
+      <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <a href="/" class="btn-primary rounded-md px-5 py-3 sm:px-7 sm:py-3.5 text-[11px] sm:text-[12px] inline-flex items-center gap-3 uppercase tracking-wider">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+          back to home
+        </a>
+      </div>
+
+      <div class="max-w-md mx-auto mt-14 sm:mt-20 text-left rise rise-2">
+        <OpenPatchInput ctaLabel="open" />
+      </div>
+    </div>
+  </section>
+
+</Base>

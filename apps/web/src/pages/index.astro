@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import PatchForm from "../components/PatchForm.astro";
+import OpenPatchInput from "../components/OpenPatchInput.astro";
 ---
 <Base title="gitdiffer — share a git diff">
 
@@ -184,6 +185,11 @@ import PatchForm from "../components/PatchForm.astro";
 
     <div class="max-w-4xl mx-auto rise rise-2">
       <PatchForm />
+    </div>
+
+    <!-- Open existing patch -->
+    <div class="max-w-md mx-auto mt-12 sm:mt-16 rise rise-3">
+      <OpenPatchInput />
     </div>
   </section>
 
