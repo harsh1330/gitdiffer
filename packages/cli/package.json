@@ -1,6 +1,6 @@
 {
   "name": "gitdiffer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Share a git diff via a one-time URL — no branch push, no PR.",
   "keywords": ["git", "diff", "patch", "share", "code-review", "cli"],
   "homepage": "https://github.com/harsh1330/gitdiffer",
