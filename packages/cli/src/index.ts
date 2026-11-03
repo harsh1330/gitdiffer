@@ -36,6 +36,6 @@ Usage:
   gitdiffer view  <id-or-url>
 
 Env:
-  GITDIFFER_HOST   override the API host (default: https://gitdiffer.app)
+  GITDIFFER_HOST   override the API host (default: https://polite-tanuki-d0250a.netlify.app)
 `);
 }

@@ -22,7 +22,7 @@ That last flow was the closest to right. So I made `gitdiffer` — basically the
 
 ### From the website
 
-1. Open the site, paste the output of `git diff` (or drop a `.patch` file).
+1. Open the site ([polite-tanuki-d0250a.netlify.app](https://polite-tanuki-d0250a.netlify.app)), paste the output of `git diff` (or drop a `.patch` file).
 2. Pick an expiry (default 7 days).
 3. Hit **Dispatch** → you get a URL, copied to your clipboard.
 4. Send the URL to your teammate.
@@ -50,7 +50,21 @@ npx gitdiffer apply <id-or-url>
 npx gitdiffer view <id-or-url>
 ```
 
-The CLI runs through `npx` so nobody on the team has to install anything.
+The CLI runs through `npx` so nobody on the team has to install anything. It needs Node 20+ and git.
+
+### When `apply` can't apply cleanly
+
+Plain `git apply` says "patch does not apply" for several different reasons. `gitdiffer apply` works out which one and tells you:
+
+| Situation | What gitdiffer does |
+|---|---|
+| You already have the change | Says it's already applied and exits successfully |
+| You have **uncommitted** edits on the same lines | Stops without touching your files — commit or `git stash`, then retry |
+| You're on a different commit, edits nearby | Applies with a 3-way merge |
+| You're on a different commit, edits on the same lines | Applies with conflict markers for you to resolve |
+| Your files don't match at all | Tells you you're likely on a different commit than the sender |
+
+The curl one-liner on the website uses plain `git apply`, so it won't give these hints — use `npx gitdiffer apply` if it fails.
 
 If you want to point the CLI at a self-hosted instance:
 
@@ -126,7 +140,7 @@ That's it — no DB, no auth provider, no env vars to configure.
 - Account-scoped history for teams that want it.
 - Self-host helper docs + a Docker image.
 
-If you want any of these, open an issue. If you don't, that's also fine.
+If you want any of these, [open an issue](https://github.com/harsh1330/gitdiffer/issues/new/choose). If you don't, that's also fine.
 
 ---
 

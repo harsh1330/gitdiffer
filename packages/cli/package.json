@@ -1,15 +1,17 @@
 {
   "name": "gitdiffer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Share a git diff via a one-time URL — no branch push, no PR.",
   "keywords": ["git", "diff", "patch", "share", "code-review", "cli"],
   "homepage": "https://github.com/harsh1330/gitdiffer",
   "repository": { "type": "git", "url": "git+https://github.com/harsh1330/gitdiffer.git" },
+  "bugs": { "url": "https://github.com/harsh1330/gitdiffer/issues" },
   "license": "MIT",
   "author": "harsh1330",
   "type": "module",
   "bin": { "gitdiffer": "bin/gitdiffer.js" },
-  "files": ["bin", "dist"],
+  "engines": { "node": ">=20" },
+  "files": ["bin", "dist", "README.md"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run"
