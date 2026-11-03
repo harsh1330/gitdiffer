@@ -1,0 +1,70 @@
+name: Bug report
+description: Something in the gitdiffer CLI or website isn't working
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please don't paste private code. A patch ID is fine, since patches expire.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where does it happen?
+      options:
+        - CLI (`npx gitdiffer ...`)
+        - Website (patch page, upload form)
+        - Raw endpoint (`/api/patches/<id>/raw`)
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you expected and what happened instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and full output
+      description: The exact command you ran and everything it printed.
+      render: shell
+      placeholder: |
+        $ npx gitdiffer apply lpUdK2RKDFaDZ6Ckzwab3G
+        error: patch failed: cmd/main.go:44
+        error: cmd/main.go: patch does not apply
+        gitdiffer: git apply exited with code 1
+
+  - type: input
+    id: patch-id
+    attributes:
+      label: Patch ID or URL (if relevant)
+      placeholder: lpUdK2RKDFaDZ6Ckzwab3G
+
+  - type: checkboxes
+    id: apply-checks
+    attributes:
+      label: For "patch does not apply" errors
+      description: These failures usually mean your file differs from the sender's, not that gitdiffer is broken. Please check first.
+      options:
+        - label: "`curl -s <host>/api/patches/<id>/raw | git apply -` fails the same way"
+        - label: "`npx gitdiffer view <id> | git apply --reverse --check -` fails (so the change isn't already applied)"
+        - label: I'm on the same commit as the sender and running from the repo root
+
+  - type: input
+    id: cli-version
+    attributes:
+      label: gitdiffer version
+      description: "`npm view gitdiffer version` or the version npx installed"
+      placeholder: 0.0.2
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node version (`node -v`), git version (`git --version`), browser if website
+      placeholder: macOS 15, Node 20.11, git 2.45, Chrome 130
